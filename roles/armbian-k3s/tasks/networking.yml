@@ -1,0 +1,20 @@
+- name: Get NetworkManager Status
+  ansible.builtin.systemd:
+    name: "NetworkManager"
+  register: nm_service_status
+
+- name: Set fix IP
+  community.general.nmcli:
+    ifname: eth0
+    conn_name: eth0
+    type: ethernet
+    ip4: "{{ network.address }}"
+    gw4: "{{ network.gateway }}"
+    state: present
+    dns4:
+    - "{{ network.dns }}"
+  when: nm_service_status.status.ActiveState == 'active'
+
+- name: "Set Hostname to {{ inventory_hostname }}"
+  hostname:
+    name: "{{ inventory_hostname }}"

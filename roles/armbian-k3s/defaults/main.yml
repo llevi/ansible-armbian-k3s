@@ -1,0 +1,6 @@
+ansible_user: root
+
+network:
+  address: "{{ ansible_default_ipv4.address }}/24"
+  dns: "{{ ansible_dns.nameservers[0] }}"
+  gateway: "{{ ansible_default_ipv4.gateway }}"

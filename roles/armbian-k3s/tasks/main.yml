@@ -1,0 +1,35 @@
+- name: Include basic networking tasks
+  include_tasks: networking.yml
+
+- name: Turn off swap
+  command: swapoff -a
+  changed_when: true
+  when: ansible_swaptotal_mb > 0
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Check if run on Armbian
+  stat:
+    path: /etc/armbian-release
+  register: armbian_stat_result
+  changed_when: false
+
+- name: Include Armbian tasks
+  include_tasks: armbian.yml
+  when: armbian_stat_result.stat.exists
+
+- name: check if /usr/bin/systemctl file exists
+  stat: 
+    path: /usr/bin/systemctl
+  register: systemctl_path
+  changed_when: false
+
+- name: Symlink systemctl executable to /usr/bin/systemctl
+  file:
+    src: /bin/systemctl
+    dest: /usr/bin/systemctl
+    state: link
+  when: systemctl_path.stat.exists == false

@@ -1,0 +1,5 @@
+- name: Disable swap for armbian
+  lineinfile:
+    path: /etc/default/armbian-zram-config
+    regexp: '^ENABLED='
+    line: ENABLED=false

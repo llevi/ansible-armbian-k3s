@@ -1,0 +1,3 @@
+- hosts: k3s-cluster
+  roles:
+    - role: 'armbian-k3s'
